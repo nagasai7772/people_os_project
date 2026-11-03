@@ -1,0 +1,14 @@
+import { Router } from "express";
+import { authenticate, authorize } from "../../middleware/auth";
+import { list, getOne, create, update, remove, orgTree, uploadPhoto } from "./employees.controller";
+import { upload } from "../../middleware/upload";
+const router = Router();
+router.use(authenticate);
+router.get("/org-chart", orgTree);
+router.get("/", list);
+router.get("/:id", getOne);
+router.post("/", authorize("ADMIN","MANAGER"), create);
+router.patch("/:id", authorize("ADMIN","MANAGER"), update);
+router.delete("/:id", authorize("ADMIN"), remove);
+router.post("/:id/photo", authorize("ADMIN","MANAGER","EMPLOYEE"), upload.single("file"), uploadPhoto);
+export default router;

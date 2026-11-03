@@ -1,0 +1,4 @@
+import {Request,Response} from "express";import {query} from "../../database/pool";import {ok,fail} from "../../utils/http";import {asyncHandler} from "../../utils/asyncHandler";
+export const list=asyncHandler(async(req:Request,res:Response)=>{const r=await query("SELECT * FROM notifications WHERE user_id=$1 ORDER BY created_at DESC LIMIT 100",[req.user!.id]);return ok(res,r.rows);});
+export const markRead=asyncHandler(async(req:Request,res:Response)=>{const r=await query("UPDATE notifications SET is_read=TRUE WHERE id=$1 AND user_id=$2 RETURNING *",[req.params.id,req.user!.id]);if(!r.rowCount)return fail(res,"Notification not found",404);return ok(res,r.rows[0]);});
+export const markAllRead=asyncHandler(async(req:Request,res:Response)=>{await query("UPDATE notifications SET is_read=TRUE WHERE user_id=$1",[req.user!.id]);return ok(res,null,"Notifications marked as read");});

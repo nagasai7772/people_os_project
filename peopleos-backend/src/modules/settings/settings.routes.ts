@@ -1,0 +1,1 @@
+import {Router} from "express";import {authenticate,authorize} from "../../middleware/auth";import {getSettings,updateSettings} from "./settings.controller";const router=Router();router.use(authenticate);router.get("/",getSettings);router.put("/",authorize("ADMIN"),updateSettings);export default router;
